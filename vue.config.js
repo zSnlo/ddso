@@ -3,7 +3,7 @@
 // development  开发环境  production  运行环境 
 
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production'? './ddso/': '/',
+  publicPath: process.env.NODE_ENV === 'production'? './': '/',
   outputDir:'docs',//默认dist 打包生成的 文件夹  --no-clean 关闭打包前删除dist文件成操作
   //从生成的资源覆写 filename 或 chunkFilename 时，assetsDir 会被忽略
   // assetsDir:'', //放置生成的静态资源 (js、css、img、fonts) 的 (相对于 outputDir 的) 目录。
