@@ -2,8 +2,10 @@
   "name": "demo-ele",
   "version": "0.1.0",
   "private": true,
+  "000":   " --open 自动打开默认浏览器  webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --host 0.0.0.0 打开的端口号",
   "scripts": {
     "serve": "vue-cli-service serve",
+    "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
