@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 // console.log(process.env.NODE_ENV)
+=======
+console.log(process.env.NODE_ENV)
+>>>>>>> 863673875318a69f8784fbc0c16ec37f644abe3c
 // process.env 可以获取当前运行环境的参数
 // development  开发环境  production  运行环境 
 
 module.exports = {
+<<<<<<< HEAD
   publicPath: process.env.NODE_ENV === 'production'? './ddso/': '/',
   // outputDir:'dist',//打包生成的 文件夹  --no-clean 关闭打包前删除dist文件成操作
   //从生成的资源覆写 filename 或 chunkFilename 时，assetsDir 会被忽略
@@ -15,6 +20,29 @@ module.exports = {
   //   // https:'',
   //   proxy: {}
   // }
+=======
+  publicPath: process.env.NODE_ENV === 'production'? './': '/',
+  outputDir:'dist',//打包生成的 文件夹  --no-clean 关闭打包前删除dist文件成操作
+  //从生成的资源覆写 filename 或 chunkFilename 时，assetsDir 会被忽略
+  assetsDir:'', //放置生成的静态资源 (js、css、img、fonts) 的 (相对于 outputDir 的) 目录。
+  //指定生成的 index.html 的输出路径 (相对于 outputDir)。也可以是一个绝对路径。
+  // indexPath:'index.html',
+  devServer: {
+    host:'0.0.0.0',//地址
+    port:'8090', //项目启动的端口号
+    // https:'',
+    proxy: {
+      '/api': {
+        target: '<url>',
+        ws: true,
+        changeOrigin: true
+      },
+      '/foo': {
+        target: '<other_url>'
+      }
+    }
+  }
+>>>>>>> 863673875318a69f8784fbc0c16ec37f644abe3c
 
   // pages: { //在 multi-page 模式下构建应用。每个“page”应该有一个对应的 JavaScript 入口文件。其值应该是一个对象，对象的 key 是入口的名字
   //   index: {
