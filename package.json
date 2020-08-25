@@ -2,7 +2,7 @@
   "name": "demo-ele",
   "version": "0.1.0",
   "private": true,
-  "000":   " --open 自动打开默认浏览器  webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --host 0.0.0.0 打开的端口号",
+  "000": " --open 自动打开默认浏览器  webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --host 0.0.0.0 打开的端口号",
   "scripts": {
     "serve": "vue-cli-service serve",
     "dev": "vue-cli-service serve",
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "extract-text-webpack-plugin": "^3.0.2",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0"
@@ -27,6 +28,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.2.2",
+    "vue-loader": "^15.9.3",
     "vue-template-compiler": "^2.6.11"
   }
 }

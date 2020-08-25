@@ -1,4 +1,5 @@
-const webpack = require('webpack')
+const webpack = require('webpack');
+const { loadavg } = require('os');
 console.log(process.env.NODE_ENV,process.argv[4])
 // process.env 可以获取当前运行环境的参数
 // development  开发环境  production  运行环境 
@@ -7,50 +8,45 @@ let api_root = ''; //网址名称
 let baseURI = ''; //CDN路径
 switch (process.env.NODE_ENV) {
   case 'development':
-      api_root = "http://www.baidu.com/";
+      // api_root = "";
       baseURI = '/';
       break;
   case 'production':
-      api_root = "https://zsnlo.github.io/ddso/";
+      // api_root = "https://zsnlo.github.io/ddso/";
       baseURI = './';
       break;
   default:
       break;
 }
-//插件用于在全局获取路径或其他
-var definePlugin = new webpack.DefinePlugin({
-  API_ROOT: JSON.stringify(api_root),
-});
 module.exports = {
+  lintOnSave: false, //关闭eslink
   publicPath: baseURI,
   outputDir:'docs',//默认dist 打包生成的 文件夹  --no-clean 关闭打包前删除dist文件成操作
   //从生成的资源覆写 filename 或 chunkFilename 时，assetsDir 会被忽略
-  assetsDir: '', // 静态资源目录 (js, css, img, fonts)
-  // assetsPublicPath:'/',
+  assetsDir: 'assets', // 静态资源目录 (js, css, img, fonts)
+  // assetsPublicPath:'./',
   //指定生成的 index.html 的输出路径 (相对于 outputDir)。也可以是一个绝对路径。
   // indexPath:'index.html',
   transpileDependencies: [], // 默认babel-loader忽略mode_modules，这里可增加例外的依赖包名
   productionSourceMap: false, // 是否在构建生产包时生成 sourceMap 文件，false将提高构建速度
-  parallel: require('os').cpus().length > 1, // 构建时开启多进程处理babel编译
-
   devServer: {
   //   host:'0.0.0.0',//地址
-  //   port:'8090', //项目启动的端口号
+    port:'8090', //项目启动的端口号
   //   // https:'',
-  /* 自动打开浏览器 */
+  // 自动打开浏览器 
   //   open: true,
-  /* 使用代理 */
-      proxy: { // string | Object
+  //使用代理 
+      // proxy: { // string | Object
         // '/api': {
-            /* 目标代理服务器地址 */
+            //目标代理服务器地址 
             // target: 'http://xxx/',
-            /* 允许跨域 */
+            // 允许跨域 
             // changeOrigin: true,
             // pathRewrite: {
               // '^/api': '' //规定请求地址以什么作为开头
           // }
         // },
-    },
+    // },
   },
 
   // pages: { //在 multi-page 模式下构建应用。每个“page”应该有一个对应的 JavaScript 入口文件。其值应该是一个对象，对象的 key 是入口的名字
@@ -74,4 +70,15 @@ module.exports = {
   //   // 输出文件名会被推导为 `subpage.html`。
   //   index: 'src/main.js',
   // },
+  // css: {
+    // loaderOptions: {
+      // css: {
+        // 这里的选项会传递给 css-loader
+      // },
+      // postcss: {
+        // 这里的选项会传递给 postcss-loader
+      // }
+    // }
+  // }
+
 }
