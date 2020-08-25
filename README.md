@@ -30,5 +30,6 @@ npm run lint
 这个项目的目的是 了解webpage打包原理及配置
 -----把 打包文件发布到 线上能正常运行  
 -----多项目 之间的打包配置关系
+预览地址 https://zsnlo.github.io/ddso/
 ```
 
