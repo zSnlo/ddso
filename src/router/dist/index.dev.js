@@ -40,7 +40,6 @@ var routes = [{
 var router = new _vueRouter["default"]({
   mode: 'history',
   base: process.env.BASE_URL,
-  linkActiveClass: 'is-active',
   routes: routes
 });
 var _default = router;
