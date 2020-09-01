@@ -1,84 +1,123 @@
-const webpack = require('webpack');
-const { loadavg } = require('os');
-console.log(process.env.NODE_ENV,process.argv[4])
-// process.env 可以获取当前运行环境的参数
-// development  开发环境  production  运行环境 
-// process.env.NODE_ENV=production 运行process.argv[4]=undefined
-let api_root = ''; //网址名称
-let baseURI = ''; //CDN路径
-switch (process.env.NODE_ENV) {
-  case 'development':
-      // api_root = "";
-      baseURI = '/';
-      break;
-  case 'production':
-      // api_root = "https://zsnlo.github.io/ddso/";
-      baseURI = './';
-      break;
-  default:
-      break;
+'use strict'
+const path = require('path')
+const defaultSettings = require('./src/settings.js')
+
+function resolve(dir) {
+  return path.join(__dirname, dir)
 }
+
+const name = defaultSettings.title || 'vue Admin Template' // page title
+
+// If your port is set to 80,
+// use administrator privileges to execute the command line.
+// For example, Mac: sudo npm run
+// You can change the port by the following methods:
+// port = 9528 npm run dev OR npm run dev --port = 9528
+const port = process.env.port || process.env.npm_config_port || 9528 // dev port
+
+// All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
-  lintOnSave: false, //关闭eslink
-  publicPath: baseURI,
-  outputDir:'docs',//默认dist 打包生成的 文件夹  --no-clean 关闭打包前删除dist文件成操作
-  //从生成的资源覆写 filename 或 chunkFilename 时，assetsDir 会被忽略
-  assetsDir: 'assets', // 静态资源目录 (js, css, img, fonts)
-  // assetsPublicPath:'./',
-  //指定生成的 index.html 的输出路径 (相对于 outputDir)。也可以是一个绝对路径。
-  // indexPath:'index.html',
-  transpileDependencies: [], // 默认babel-loader忽略mode_modules，这里可增加例外的依赖包名
-  productionSourceMap: false, // 是否在构建生产包时生成 sourceMap 文件，false将提高构建速度
+  /**
+   * You will need to set publicPath if you plan to deploy your site under a sub path,
+   * for example GitHub Pages. If you plan to deploy your site to https://foo.github.io/bar/,
+   * then publicPath should be set to "/bar/".
+   * In most cases please use '/' !!!
+   * Detail: https://cli.vuejs.org/config/#publicpath
+   */
+  publicPath: '/',
+  outputDir: 'dist',
+  assetsDir: 'static',
+  lintOnSave: process.env.NODE_ENV === 'development',
+  productionSourceMap: false,
   devServer: {
-  //   host:'0.0.0.0',//地址
-    port:'8090', //项目启动的端口号
-  //   // https:'',
-  // 自动打开浏览器 
-  //   open: true,
-  //使用代理 
-      // proxy: { // string | Object
-        // '/api': {
-            //目标代理服务器地址 
-            // target: 'http://xxx/',
-            // 允许跨域 
-            // changeOrigin: true,
-            // pathRewrite: {
-              // '^/api': '' //规定请求地址以什么作为开头
-          // }
-        // },
-    // },
+    port: port,
+    open: true,
+    overlay: {
+      warnings: false,
+      errors: true
+    },
+    before: require('./mock/mock-server.js')
   },
+  configureWebpack: {
+    // provide the app's title in webpack's name field, so that
+    // it can be accessed in index.html to inject the correct title.
+    name: name,
+    resolve: {
+      alias: {
+        '@': resolve('src')
+      }
+    }
+  },
+  chainWebpack(config) {
+    // it can improve the speed of the first screen, it is recommended to turn on preload
+    config.plugin('preload').tap(() => [
+      {
+        rel: 'preload',
+        // to ignore runtime.js
+        // https://github.com/vuejs/vue-cli/blob/dev/packages/@vue/cli-service/lib/config/app.js#L171
+        fileBlacklist: [/\.map$/, /hot-update\.js$/, /runtime\..*\.js$/],
+        include: 'initial'
+      }
+    ])
 
-  // pages: { //在 multi-page 模式下构建应用。每个“page”应该有一个对应的 JavaScript 入口文件。其值应该是一个对象，对象的 key 是入口的名字
-  //   index: {
-  //     // page 的入口
-  //     entry: 'src/main.js',
-  //     // 模板来源
-  //     template: 'public/index.html',
-  //     // 在 dist/index.html 的输出
-  //     filename: 'index.html',
-  //     // 当使用 title 选项时，
-  //     // template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
-  //     title: 'Index Page',
-  //     // 在这个页面中包含的块，默认情况下会包含
-  //     // 提取出来的通用 chunk 和 vendor chunk。
-  //     chunks: ['chunk-vendors', 'chunk-common', 'index']
-  //   },
-  //   // 当使用只有入口的字符串格式时，
-  //   // 模板会被推导为 `public/subpage.html`
-  //   // 并且如果找不到的话，就回退到 `public/index.html`。
-  //   // 输出文件名会被推导为 `subpage.html`。
-  //   index: 'src/main.js',
-  // },
-  // css: {
-    // loaderOptions: {
-      // css: {
-        // 这里的选项会传递给 css-loader
-      // },
-      // postcss: {
-        // 这里的选项会传递给 postcss-loader
-      // }
-    // }
-  // }
+    // when there are many pages, it will cause too many meaningless requests
+    config.plugins.delete('prefetch')
 
+    // set svg-sprite-loader
+    config.module
+      .rule('svg')
+      .exclude.add(resolve('src/icons'))
+      .end()
+    config.module
+      .rule('icons')
+      .test(/\.svg$/)
+      .include.add(resolve('src/icons'))
+      .end()
+      .use('svg-sprite-loader')
+      .loader('svg-sprite-loader')
+      .options({
+        symbolId: 'icon-[name]'
+      })
+      .end()
+
+    config
+      .when(process.env.NODE_ENV !== 'development',
+        config => {
+          config
+            .plugin('ScriptExtHtmlWebpackPlugin')
+            .after('html')
+            .use('script-ext-html-webpack-plugin', [{
+            // `runtime` must same as runtimeChunk name. default is `runtime`
+              inline: /runtime\..*\.js$/
+            }])
+            .end()
+          config
+            .optimization.splitChunks({
+              chunks: 'all',
+              cacheGroups: {
+                libs: {
+                  name: 'chunk-libs',
+                  test: /[\\/]node_modules[\\/]/,
+                  priority: 10,
+                  chunks: 'initial' // only package third parties that are initially dependent
+                },
+                elementUI: {
+                  name: 'chunk-elementUI', // split elementUI into a single package
+                  priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+                  test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
+                },
+                commons: {
+                  name: 'chunk-commons',
+                  test: resolve('src/components'), // can customize your rules
+                  minChunks: 3, //  minimum common number
+                  priority: 5,
+                  reuseExistingChunk: true
+                }
+              }
+            })
+          // https:// webpack.js.org/configuration/optimization/#optimizationruntimechunk
+          config.optimization.runtimeChunk('single')
+        }
+      )
+  }
 }
