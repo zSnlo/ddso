@@ -1,11 +1,22 @@
+// 上部导航栏
 <template>
   <div class="navbar">
+    <!-- 左侧折贴按钮 -->
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-
+    <!-- 面包屑导航 -->
     <breadcrumb class="breadcrumb-container" />
-
+    <!-- 右侧 -->
     <div class="right-menu">
-      <el-dropdown class="avatar-container" trigger="click">
+      <template v-if="device!=='mobile'">
+        <!-- <search id="header-search" class="right-menu-item" />
+        <error-log class="errLog-container right-menu-item hover-effect" />
+        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+        <el-tooltip content="Global Size" effect="dark" placement="bottom">
+          <size-select id="size-select" class="right-menu-item hover-effect" />
+        </el-tooltip> -->
+      </template>
+      <!-- 图像 -->
+      <el-dropdown class="avatar-container" trigger="hover">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
           <i class="el-icon-caret-bottom" />
@@ -33,18 +44,27 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
+import Breadcrumb from '@/components/layoutbase/Breadcrumb'
+import Hamburger from '@/components/layoutbase/Hamburger'
+// import ErrorLog from '@/components/layoutbase/ErrorLog'
+// import Screenfull from '@/components/layoutbase/Screenfull'
+// import SizeSelect from '@/components/layoutbase/SizeSelect'
+// import Search from '@/components/layoutbase/HeaderSearch'
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    // Screenfull,
+    // SizeSelect,
+    // Search,
+    // ErrorLog
   },
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'device'
     ])
   },
   methods: {
